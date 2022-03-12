@@ -11,12 +11,15 @@ const html = `
   <body>
   <div id="root"></div>
   <script>
+  const handleError=(err)=>{
+const root=document.querySelector("#root");
+  root.innerHTML='<div style="color:red;"><h4>Runtime error</h4>'+err+'</div>'
+  console.error(err);
+  };
  window.addEventListener('message',(event)=>{
 try{ eval(event.data);}
 catch (err){
-  const root=document.querySelector("#root");
-  root.innerHTML='<div style="color:red;"><h4>Runtime error</h4>'+err+'</div>'
-  console.error(err);
+  handleError(err);
 }
  
  },false);
@@ -28,7 +31,9 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
   const iframe = useRef<any>();
   useEffect(() => {
     iframe.current.srcdocs = html;
-    iframe.current.contentWindow.postMessage(code, '*');
+    setTimeout(() => {
+      iframe.current.contentWindow.postMessage(code, '*');
+    }, 50);
   }, [code]);
   return (
     <div className="preview-wrapper">
