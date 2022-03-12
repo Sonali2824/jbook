@@ -2,7 +2,11 @@ import { useEffect, useRef } from 'react';
 import './preview.css';
 interface PreviewProps {
   code: string;
+  err: any;
 }
+//sync error
+//async error
+//syntax error
 const html = `
   <html>
   <head>
@@ -31,7 +35,7 @@ catch (err){
   </body>
   </html>
   `;
-const Preview: React.FC<PreviewProps> = ({ code }) => {
+const Preview: React.FC<PreviewProps> = ({ code, err }) => {
   const iframe = useRef<any>();
   useEffect(() => {
     iframe.current.srcdocs = html;
@@ -48,6 +52,7 @@ const Preview: React.FC<PreviewProps> = ({ code }) => {
         sandbox="allow-scripts"
         srcDoc={html}
       />
+      {err && <div className="preview-error">{err}</div>}
     </div>
   );
 };
