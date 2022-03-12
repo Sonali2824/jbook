@@ -1,36 +1,28 @@
 import { ActionType } from '../action-types';
+import { Action } from '../actions';
+import { Cell } from '../cell';
 
-interface MoveCellAction {
-  type: ActionType.MOVE_CELL;
-  payload: {
-    id: string;
-    direction: 'up' | 'down';
+interface CellsState {
+  loading: boolean;
+  error: string | null;
+  order: string[];
+  data: {
+    [key: string]: Cell;
   };
 }
 
-interface DeleteCellAction {
-  type: ActionType.DELETE_CELL;
-  payload: string;
-}
+const initialState: CellsState = {
+  loading: false,
+  error: null,
+  order: [],
+  data: {},
+};
 
-interface InsertCellAction {
-  type: ActionType.INSERT_CELL_BEFORE;
-  payload: {
-    id: string;
-    type: 'code' | 'text';
-  };
-}
+const reducer = (
+  state: CellsState = initialState,
+  action: Action
+): CellsState => {
+  return state;
+};
 
-interface UpdateCellACtion {
-  type: ActionType.UPDATE_CELL;
-  payload: {
-    id: string;
-    content: string;
-  };
-}
-
-export type Action =
-  | MoveCellAction
-  | DeleteCellAction
-  | UpdateCellACtion
-  | InsertCellAction;
+export default reducer;
