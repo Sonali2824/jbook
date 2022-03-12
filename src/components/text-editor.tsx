@@ -1,8 +1,10 @@
 import MDEditor from '@uiw/react-md-editor';
 import { useState, useEffect, useRef } from 'react';
+import './text-editor.css';
 const TextEditor: React.FC = () => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState('# Header');
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       if (
@@ -10,10 +12,10 @@ const TextEditor: React.FC = () => {
         event.target &&
         ref.current.contains(event.target as Node)
       ) {
-        console.log('element clicked inside');
+        //console.log('element clicked inside');
         return;
       }
-      console.log('element clicked outside');
+      //console.log('element clicked outside');
       setEditing(false);
     };
     document.addEventListener('click', listener, { capture: true });
@@ -23,14 +25,16 @@ const TextEditor: React.FC = () => {
   });
   if (editing) {
     return (
-      <div ref={ref}>
-        <MDEditor />
+      <div className="text-editor" ref={ref}>
+        <MDEditor value={value} onChange={(v) => setValue(v || '')} />
       </div>
     );
   }
   return (
-    <div onClick={() => setEditing(true)}>
-      <MDEditor.Markdown source={'# Header'} />
+    <div className="text-editor card" onClick={() => setEditing(true)}>
+      <div className="card-content">
+        <MDEditor.Markdown source={value} />
+      </div>
     </div>
   );
 };
