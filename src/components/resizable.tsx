@@ -1,6 +1,6 @@
 import './resizable.css';
-import { ResizableBox, ResizableBoxProps } from 'react-resizable';
 import { useEffect, useState } from 'react';
+import { ResizableBox, ResizableBoxProps } from 'react-resizable';
 
 interface ResizableProps {
   direction: 'horizontal' | 'vertical';
@@ -19,25 +19,27 @@ const Resizable: React.FC<ResizableProps> = ({ direction, children }) => {
         clearTimeout(timer);
       }
       timer = setTimeout(() => {
-        setInnerWidth(window.innerWidth);
         setInnerHeight(window.innerHeight);
+        setInnerWidth(window.innerWidth);
         if (window.innerWidth * 0.75 < width) {
           setWidth(window.innerWidth * 0.75);
         }
       }, 100);
     };
     window.addEventListener('resize', listener);
+
     return () => {
       window.removeEventListener('resize', listener);
     };
-  });
+  }, [width]);
+
   if (direction === 'horizontal') {
     resizableProps = {
       className: 'resize-horizontal',
       minConstraints: [innerWidth * 0.2, Infinity],
       maxConstraints: [innerWidth * 0.75, Infinity],
       height: Infinity,
-      width: width,
+      width,
       resizeHandles: ['e'],
       onResizeStop: (event, data) => {
         setWidth(data.size.width);
