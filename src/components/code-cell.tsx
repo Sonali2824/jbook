@@ -14,7 +14,8 @@ interface CodeCellProps {
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector((state) => state?.bundles?.[cell?.id]);
-
+  //no bundle-->loading
+  //processing code-->loading
   useEffect(() => {
     if (!bundle) {
       createBundle(cell.id, cell.content);
@@ -24,12 +25,13 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const timer = setTimeout(async () => {
       createBundle(cell.id, cell.content);
     }, 750);
-
+    //re create a bundle
     return () => {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cell.content, cell.id, createBundle]); //dependency array
+  //when bundle changes -> use effect
   //every 750s new version of createBundle is created
   //useAction() cause this, hence use the following
   //dispatch changes --> runs useMemo --> binds actions only once
@@ -48,7 +50,10 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
             onChange={(value) => updateCell(cell.id, value)}
           />
         </Resizable>
+        {/* wrapper to have a bg color-->white, not affected by fadeIn */}
         <div className="progress-wrapper">
+          {/* if bundle is undefined or bundle is loading 
+          progress is progress bar*/}
           {!bundle || bundle.loading ? (
             <div className="progress-cover">
               <progress className="progress is-small is-primary" max="100">
