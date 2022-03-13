@@ -20,7 +20,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
       createBundle(cell.id, cell.content);
       return;
     }
-
+    //no timer is set, only create bundle
     const timer = setTimeout(async () => {
       createBundle(cell.id, cell.content);
     }, 750);
@@ -31,7 +31,8 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cell.content, cell.id, createBundle]); //dependency array
   //every 750s new version of createBundle is created
-
+  //useAction() cause this, hence use the following
+  //dispatch changes --> runs useMemo --> binds actions only once
   return (
     <Resizable direction="vertical">
       <div
