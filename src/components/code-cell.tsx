@@ -14,23 +14,45 @@ interface CodeCellProps {
 const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
   const { updateCell, createBundle } = useActions();
   const bundle = useTypedSelector((state) => state?.bundles?.[cell?.id]);
+  const cumulativeCode = useTypedSelector((state) => {
+    const orderedCells = state?.cells?.order.map(
+      (id) => state?.cells?.data[id]
+    );
+    const cumulativeCode = [
+      `
+const show=(value)=>{
+  document.querySelector("#root").innerHTML=value;
+}
+`,
+    ];
+    for (let c of orderedCells as any) {
+      if (c.type === 'code') {
+        cumulativeCode.push(c.content);
+      }
+      if (c.id == cell.id) {
+        break;
+      }
+    }
+    return cumulativeCode;
+  });
+  console.log(cumulativeCode);
   //no bundle-->loading
   //processing code-->loading
   useEffect(() => {
     if (!bundle) {
-      createBundle(cell.id, cell.content);
+      createBundle(cell.id, cumulativeCode.join('\n'));
       return;
     }
     //no timer is set, only create bundle
     const timer = setTimeout(async () => {
-      createBundle(cell.id, cell.content);
+      createBundle(cell.id, cumulativeCode.join('\n'));
     }, 750);
     //re create a bundle
     return () => {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cell.content, cell.id, createBundle]); //dependency array
+  }, [cumulativeCode.join('\n'), cell.id, createBundle]); //dependency array
   //when bundle changes -> use effect
   //every 750s new version of createBundle is created
   //useAction() cause this, hence use the following
